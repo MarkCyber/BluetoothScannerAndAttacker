@@ -50,7 +50,10 @@ int main() {
         bt_command();
     }
 
-    // Cleanup if necessary
+    // Cleanup
+    bt_scan_cleanup();
+    // Similarly, add cleanup functions for other modules if needed
+
     printf("Shutting down gracefully...\n");
 
     return EXIT_SUCCESS;
