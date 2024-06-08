@@ -3,4 +3,4 @@
 
 void capture_data(void);
 
-#endif //BT_CAPTURE_H
+#endif // BT_CAPTURE_H
