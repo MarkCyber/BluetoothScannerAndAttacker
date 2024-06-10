@@ -1,50 +1,30 @@
-#include "bt_scan.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/hci.h>
 #include <bluetooth/hci_lib.h>
 
-static int dev_id;
-static int sock;
-
-int bt_scan_init() {
-    // Get the resource ID of the first available Bluetooth adapter
-    dev_id = hci_get_route(NULL);
-    if (dev_id < 0) {
-        perror("Failed to get Bluetooth adapter ID");
-        return -1;
-    }
-
-    // Open a socket to the Bluetooth adapter
-    sock = hci_open_dev(dev_id);
-    if (sock < 0) {
-        perror("Failed to open Bluetooth socket");
-        return -1;
-    }
-
-    printf("Bluetooth scan initialized.\n");
-    return 0; // Success
-}
-
-void bt_scan() {
+int main(int argc, char **argv) {
     inquiry_info *ii = NULL;
     int max_rsp, num_rsp;
-    int len, flags;
+    int dev_id, sock, len, flags;
     char addr[19] = { 0 };
     char name[248] = { 0 };
 
-    len = 8; // Duration of the inquiry
-    max_rsp = 255; // Maximum number of devices to discover
-    flags = IREQ_CACHE_FLUSH; // Flush cache of previously discovered devices
+    dev_id = hci_get_route(NULL);
+    sock = hci_open_dev(dev_id);
+    if (dev_id < 0 || sock < 0) {
+        perror("opening socket");
+        exit(1);
+    }
+
+    len = 8;
+    max_rsp = 255;
+    flags = IREQ_CACHE_FLUSH;
     ii = (inquiry_info*)malloc(max_rsp * sizeof(inquiry_info));
 
     num_rsp = hci_inquiry(dev_id, len, max_rsp, NULL, &ii, flags);
-    if (num_rsp < 0) {
-        perror("hci_inquiry");
-        free(ii);
-        return;
-    }
+    if (num_rsp < 0) perror("hci_inquiry");
 
     for (int i = 0; i < num_rsp; i++) {
         ba2str(&(ii+i)->bdaddr, addr);
@@ -55,13 +35,6 @@ void bt_scan() {
     }
 
     free(ii);
-}
-
-int bt_scan_cleanup() {
-    if (close(sock) < 0) {
-        perror("Failed to close Bluetooth socket");
-        return -1;
-    }
-    printf("Bluetooth scan cleaned up.\n");
-    return 0; // Success
+    close(sock);
+    return 0;
 }
