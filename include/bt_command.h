@@ -1,6 +1,8 @@
 #ifndef BT_COMMAND_H
 #define BT_COMMAND_H
 
-void send_command(char *device_address, const char *command);
+int bt_command_init();
+void send_bt_command();
+void bt_command();
 
-#endif // BT_COMMAND_H
+#endif
