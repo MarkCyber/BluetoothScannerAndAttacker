@@ -9,10 +9,12 @@
 #include <bluetooth/hci_lib.h>
 #include <bluetooth/l2cap.h>
 
+
 #define EIR_FLAGS                   0x01
 #define EIR_NAME_SHORT              0x08
 #define EIR_NAME_COMPLETE           0x09
 #define EIR_MANUFACTURER_SPECIFIC   0xFF
+
 
 void eir_parse_name(uint8_t *eir, size_t eir_len, char *buf, size_t buf_len) {
     size_t offset = 0;
