@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
 // Flag to keep the application running
 static volatile int keepRunning = 1;
 
